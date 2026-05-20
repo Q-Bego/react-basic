@@ -1,25 +1,16 @@
-import logo from './logo.svg';
-import './App.css';
-
-function App() {
+import './App.css'
+import Header from './components/Header'
+//组件的应用
+const App = () => {
+  const handleClick = () => {
+    alert('App组件')
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='app' onClick={handleClick}>
+      <Header></Header>
+      React Component
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
