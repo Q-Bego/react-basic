@@ -3,6 +3,12 @@ import { useState } from 'react'
 import './App.scss'
 //使用图片的话必须要导入
 import head from './assets/head.png'
+import { orderBy } from 'lodash'
+//导航Tab数据
+const tabs = [
+  { type: 'hot', text: '最热' },
+  { type: 'time', text: '最新' }
+]
 //列表数据
 const defaultList = [
   {
@@ -50,19 +56,87 @@ const defaultList = [
     action: 1
   }
 ]
+//当前用户信息
+const user = {
+  // 用户id
+  uid: '30009257',
+  // 用户头像
+  avatar: head,
+  // 用户昵称
+  uname: '明智吾郎'
+}
 const App = () => {
+  //记录导航tab高亮的状态
+  const [activeTab, setActiveTab] = useState('hot')
   const [list, setList] = useState(defaultList)
+  const onDelete = rpid => {
+    setList(list.filter(item => item.rpid !== rpid))
+  }
+  const onLike = rpid => {
+    setList(
+      list.map(item => {
+        if (item.rpid === rpid) {
+          console.log(item)
+          return {
+            ...item,
+            action: item.action === 0 ? 1 : 0,
+            like: item.action === 1 ? item.like - 1 : item.like + 1
+          }
+        }
+        return item
+      })
+    )
+  }
+  const onDislike = rpid => {
+    setList(
+      list.map(item => {
+        if (item.rpid == rpid) {
+          return {
+            ...item,
+            action: item.action === 2 ? 0 : 2,
+            //如果现在是喜欢，需要数量减1
+            //如果没有喜欢，数量不变
+            like: item.action === 1 ? item.like - 1 : item.like
+          }
+        }
+        return item
+      })
+    )
+  }
+  const ontoggle = type => {
+    setActiveTab(type)
+    let newlist
+    if (type === 'time') {
+      //按照时间降序排序
+      newlist = orderBy(list, 'ctime', 'desc')
+    } else {
+      //按照喜欢数量排序
+      newlist = orderBy(list, 'like', 'desc')
+    }
+    setList(newlist)
+  }
   return (
     <div className='app'>
       <div className='reply-navigation'>
         <ul className='nav-bar'>
           <li className='nav-title'>
             <span className='nav-title-text'>评论</span>
-            <span className='total-reply'>9</span>
+            <span className='total-reply'>{list.length}</span>
           </li>
           <li className='nav-sort'>
-            <div className='nav-item active'>最热</div>
-            <div className='nav-item'>最新</div>
+            {tabs.map(item => {
+              return (
+                <div
+                  key={item.type}
+                  className={
+                    item.type === activeTab ? 'nav-item active' : 'nav-item'
+                  }
+                  onClick={() => ontoggle(item.type)}
+                >
+                  {item.text}
+                </div>
+              )
+            })}
           </li>
         </ul>
       </div>
@@ -108,13 +182,34 @@ const App = () => {
                   <div className='reply-info'>
                     <span className='reply-time'>{item.ctime}</span>
                     <span className='reply-like'>
-                      <i className='icon like-icon'></i>
+                      <i
+                        className={
+                          item.action === 1
+                            ? 'icon like-icon liked'
+                            : 'icon like-icon'
+                        }
+                        onClick={() => onLike(item.rpid)}
+                      ></i>
                       <span>{item.like}</span>
                     </span>
                     <span className='reply-dislike'>
-                      <i className='icon dislike-icon'></i>
+                      <i
+                        className={
+                          item.action === 2
+                            ? 'icon dislike-icon disliked'
+                            : 'icon dislike-icon'
+                        }
+                        onClick={() => onDislike(item.rpid)}
+                      ></i>
                     </span>
-                    <span className='delete-btn'>删除</span>
+                    {user.uid === item.user.uid && (
+                      <span
+                        className='delete-btn'
+                        onClick={() => onDelete(item.rpid)}
+                      >
+                        删除
+                      </span>
+                    )}
                     <span></span>
                   </div>
                 </div>
@@ -124,7 +219,7 @@ const App = () => {
         })}
       </div>
 
-      <div className='reply-none'>暂无评论</div>
+      {list.length === 0 && <div className='reply-none'>暂无评论</div>}
     </div>
   )
 }
