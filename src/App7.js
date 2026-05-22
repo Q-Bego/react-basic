@@ -5,6 +5,7 @@ import './App.scss'
 //使用图片的话必须要导入
 import head from './assets/head.png'
 import { orderBy } from 'lodash'
+import dayjs from 'dayjs'
 //导航Tab数据
 const tabs = [
   { type: 'hot', text: '最热' },
@@ -70,6 +71,7 @@ const App = () => {
   //记录导航tab高亮的状态
   const [activeTab, setActiveTab] = useState('hot')
   const [list, setList] = useState(defaultList)
+  const [value, setValue] = useState('')
   const onDelete = rpid => {
     setList(list.filter(item => item.rpid !== rpid))
   }
@@ -116,6 +118,28 @@ const App = () => {
     }
     setList(newlist)
   }
+  const onAdd = () => {
+    //组装一条评论数据
+    const comment = {
+      rpid: Date.now(),
+      user,
+      content: value,
+      ctime: dayjs().format('MM-DD HH:mm'),
+      like: 0,
+      action: 0
+    }
+    //添加到评论列表list
+    const newList = [comment, ...list]
+    //排序
+    if (activeTab === 'time') {
+      setList(orderBy(newList, 'ctime', 'desc'))
+    } else {
+      setList(orderBy(newList, 'like', 'desc'))
+    }
+    //刷新评论状态
+    //清空输入框
+    setValue('')
+  }
   return (
     <div className='app'>
       <div className='reply-navigation'>
@@ -152,8 +176,12 @@ const App = () => {
             <textarea
               className='reply-box-textarea'
               placeholder='发布一条友善的评论'
+              value={value}
+              onChange={e => {
+                setValue(e.target.value)
+              }}
             ></textarea>
-            <div className='reply-box-send'>
+            <div className='reply-box-send' onClick={onAdd}>
               <div className='send-text'>发布</div>
             </div>
           </div>
