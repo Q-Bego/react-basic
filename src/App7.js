@@ -1,6 +1,6 @@
 // 评论案例
 //如果要在react脚手架中使用scss的话，一定要装包
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import './App.scss'
 //使用图片的话必须要导入
 import head from './assets/head.png'
@@ -118,7 +118,13 @@ const App = () => {
     }
     setList(newlist)
   }
+  //点击发布获得焦点
+  const textRef = useRef(null)
   const onAdd = () => {
+    //为空时点击获得焦点
+    if (value.trim() === '') {
+      return textRef.current.focus()
+    }
     //组装一条评论数据
     const comment = {
       rpid: Date.now(),
@@ -180,6 +186,7 @@ const App = () => {
               onChange={e => {
                 setValue(e.target.value)
               }}
+              ref={textRef}
             ></textarea>
             <div className='reply-box-send' onClick={onAdd}>
               <div className='send-text'>发布</div>
