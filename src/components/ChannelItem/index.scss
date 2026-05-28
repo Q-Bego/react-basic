@@ -1,0 +1,30 @@
+.ChannelItem {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: 70px;
+  height: 40px;
+  border: 1px solid gray;
+  .name {
+    display: flex;
+    margin: 0 auto;
+    background-color: rgb(221, 221, 221);
+  }
+  .close {
+    position: absolute;
+    border: 1px solid rgb(223, 220, 220);
+    border-radius: 10px;
+    width: 15px;
+    height: 15px;
+    top: -10px;
+    right: -10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  &.more-item {
+    background-color: rgb(237, 230, 230);
+    border: none;
+  }
+}
