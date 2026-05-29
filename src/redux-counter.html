@@ -29,7 +29,26 @@
       // <!-- 2.使用reducer函数生成store实例 -->
       const store = Redux.createStore(reducer)
       // <!-- 3.通过store实例的subscribe订阅数据变化 -->
+      store.subscribe(() => {
+        console.log('state变化了', store.getState())
+        document.getElementById('count').innerText = store.getState().count
+      })
       // <!-- 4.通过store实例的dispatch函数提交action更改状态 -->
+      const inBtn = document.getElementById('increment')
+      inBtn.addEventListener('click', () => {
+        store.dispatch({
+          type: 'INCREMENT'
+        })
+      })
+      //减
+      const dBtn = document.getElementById('decrement')
+      dBtn.addEventListener('click', () => {
+        store.dispatch({
+          type: 'DECREMENT'
+        })
+      })
+
+      //5.通过store实例的getState方法获取最新状态更新到视图中
     </script>
   </body>
 </html>
