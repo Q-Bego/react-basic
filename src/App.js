@@ -1,16 +1,16 @@
-import './App.css'
-import { useState } from 'react'
-//组件的状态更新
-const App = () => {
-  //状态更新需要usestate函数
-  const [count, setCount] = useState(10)
+import { useDispatch, useSelector } from 'react-redux'
+import { increment, decrement, addToNum } from './store/modules/counterStore'
+function App () {
+  const { count } = useSelector(state => state.counter)
+  const dispatch = useDispatch()
   return (
-    <div>
-      <h1>计数器:{count}</h1>
-      {/* 不要用setCount(count+=1)，直接用count+1,不要修改count,会导致渲染报错 */}
-      <button onClick={() => setCount(count + 1)}>+1</button>
+    <div className='App'>
+      <button onClick={() => dispatch(decrement())}>-</button>
+      {count}
+      <button onClick={() => dispatch(increment())}>+</button>
+      <button onClick={() => dispatch(addToNum(10))}>add To 10</button>
+      <button onClick={() => dispatch(addToNum(20))}>add To 20</button>
     </div>
   )
 }
-
 export default App
